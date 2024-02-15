@@ -1,7 +1,7 @@
 import requests
 import sys
 import time
-from analice_file import analice_items
+from analice_caracteres import analice_items
 from obtener_fechas import obtener_fechas
 
 
@@ -43,8 +43,8 @@ def get_message(desde, hasta, archivo):
         iTerar = '1'
 
         # Header del csv
-        cadena = ('id;creationTime;chatId;startingCause;' +
-                  'usuario;type;text;caracteres;template\n')
+        cadena = ('id;creationTime;chatId;channelId;contactId;startingCause;' +
+                  'usuario;type;text;caracteres;template;cola;idAgente\n')
 
         CSV.append(cadena)
 
