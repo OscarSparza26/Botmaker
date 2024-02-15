@@ -28,7 +28,7 @@ headers = {'access-token': 'eyJhbGciOiJIUzUxMiJ9.eyJidXNpbmVzc0lkIjoiZ3Vyd' +
 def get_message(desde, hasta, archivo):
 
     params = {'from': desde,
-              'include-events': True,
+              'include-events': False,
               'include-messages': True,
               'include-open-sessions': True,
               'include-variables': False,
@@ -40,25 +40,20 @@ def get_message(desde, hasta, archivo):
 
     if response.status_code == 200:
         CSV = []
+        iTerar = '1'
 
         # Header del csv
-        cadena = ('id;chatId;channelId;contactId;from\n')
+        cadena = ('id;creationTime;chatId;startingCause;' +
+                  'usuario;type;text;caracteres;template\n')
 
         CSV.append(cadena)
-        iTerar = '1'
-        ii = 0
 
         while iTerar == '1' and response.status_code == 200:
             datos = response.json()
-            datos_log = response.text
-            ii += 1
-            log = 'response_' + dia + "_" + str(ii) + '.json'
-            with open(log, 'w',  encoding="utf8") as archivo:
-                archivo.write(datos_log)
             analice_items(CSV, datos)
             nextPage = datos['nextPage']
             if nextPage:
-                print('nxtPage')
+                print('nextPage')
                 response = requests.get(nextPage, headers=headers)
             else:
                 iTerar = '0'
@@ -78,9 +73,9 @@ dias_a_procesar = obtener_fechas(mes, anio)
 
 for day in dias_a_procesar:
     dia = day.strftime('%Y-%m-%d')
-    desde = dia + 'T06:00:00.000Z'
-    hasta = dia + 'T23:00:00.000Z'
-    archivo = 'chat_' + dia + '.csv'
+    desde = dia + 'T00:00:00.000Z'
+    hasta = dia + 'T23:59:00.000Z'
+    archivo = 'text_' + dia + '.csv'
     print('desde: {} -  hasta: {} - archivo: {}'.format(desde, hasta, archivo))
     iError = get_message(desde, hasta, archivo)
     if iError != 200:
